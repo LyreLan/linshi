@@ -633,3 +633,39 @@ export default {
 </style>
 
 000000000000000000000000000000000000000000000000000000000000
+
+router/index.js
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import home from '../components/home.vue'
+import login from '../views/login.vue'
+import tempo from '../views/tempo.vue'
+
+Vue.use(VueRouter)
+
+const routes = [{
+    path: '/',
+    redirect: '/home'
+  },
+  {
+    path: '/login',
+    component: login
+  },
+  {
+    path: '/home',
+    component: home,
+  },
+  {
+    path: '/tempo',
+    component: tempo,
+  },
+]
+
+const router = new VueRouter({
+  routes
+})
+
+export default router
+
+00000000000000000000000000000000000000000000000000000000000
+
