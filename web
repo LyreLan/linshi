@@ -1,1 +1,635 @@
+app.vue
 
+<template>
+  <div id="app">
+  <router-view></router-view>
+    </div>
+</template>
+
+<script>
+export default {
+  name:"app"
+  
+}
+</script>
+
+<style>
+
+</style>
+00000000000000000000000000000000000000000000000000000000000000000000000000
+
+main.js
+
+import Vue from 'vue'
+import App from './App.vue'
+import router from './router'
+// 导入字体图标
+import '@/assets/fonts/iconfont.css';
+// 导入全局样式表
+import './assets/css/alobal.css';
+// element-ui组件库
+
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+
+import axios from 'axios'
+// 配置请求的根路径
+axios.defaults.baseURL=''
+Vue.prototype.$http = axios
+
+
+Vue.use(ElementUI);
+Vue.config.productionTip = false
+
+new Vue({
+  router,
+  render: h => h(App)
+}).$mount('#app')
+
+0000000000000000000000000000000000000000000000000000000000000000000
+
+views/login.vue
+<template>
+  <div class="login_container">
+    <div class="login_box">
+      <!-- 头像区域 -->
+      <div class="avatar_box">
+        <img src="../assets/logo.png" alt />
+      </div>
+      <!-- 登录表单区域 -->
+      <el-form
+        ref="loginFormRef"
+        :model="loginForm"
+        :rules="longinFormRules"
+        label-width="0px"
+        class="login_form"
+      >
+        <el-form-item prop="username">
+          <el-input v-model="loginForm.username" prefix-icon="el-icon-user-solid"></el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input v-model="loginForm.password" prefix-icon="el-icon-s-goods" type="password"></el-input>
+        </el-form-item>
+        <el-form-item class="btns">
+          <el-button type="primary" @click="login">登录</el-button>
+          <el-button type="info" @click="resetloginFormRef">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+    created () {
+   this.$api.get('topics', null, r => {
+     console.log(r)
+   })
+ },
+  data() {
+    return {
+      // 登录表单数据绑定对象
+      loginForm: {
+        username: "",
+        password: ""
+      },
+      // 表单验证规则对象
+      longinFormRules: {
+        username: [
+          { required: true, message: "请输入用户账号", trigger: "blur" },
+          { min: 8, max: 10, message: "请输入正确的账号", trigger: "blur" }
+        ],
+        password: [
+          { required: true, message: "请输入登录密码", trigger: "blur" },
+          { min: 6, max: 20, message: "请输入正确的密码", trigger: "blur" }
+        ]
+      }
+    };
+  },
+  methods: {
+    // 点击重置按钮，重置登录表单
+    resetloginFormRef() {
+      //   console.log(this);
+      this.$refs.loginFormRef.resetFields();
+    },
+    login() {
+        this.$refs.loginFormRef.validate(async valid => {
+        // console.log(valid);
+        if (!valid) return;
+        const { data: res } = await this.$http.post("login", this.loginForm);
+        window.sessionStorage.setItem("token", res.data.token);
+        this.$routar.push('/home')
+      });
+
+    //   this.$refs.loginFormRef.validate(async valid => {
+    //     // console.log(valid);
+    //     if (!valid) return;
+    //     const { data: res } = await this.$http.post("login", this.loginForm);
+    //     if (res.meta.status !== 200) return this.$message.error('登录失败');
+    //     this.$message.success("登录成功");
+    //     window.sessionStorage.setItem("token", res.data.token);
+    //     this.$routar.push('/home')
+    //   });
+    }
+  }
+};
+</script>
+
+<style lang="less" scoped>
+.login_container {
+  background-color: #2b4b6b;
+  height: 100%;
+}
+.login_box {
+  width: 450px;
+  height: 300px;
+  background-color: #fff;
+  border-radius: 3px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  .avatar_box {
+    height: 130px;
+    width: 130px;
+    border: 1px solid #eee;
+    border-radius: 50%;
+    padding: 10px;
+    box-shadow: 0 0 10px #ddd;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: #eee;
+    }
+  }
+  .login_form {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+
+  .btns {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+</style>
+
+00000000000000000000000000000000000000000000000000000000000000000000000
+
+views/tempo.vue
+<template>
+  <div id="main" class="beijing">
+    <div class="ling">
+      <div class="box1">
+        <img class="box1k" src="../assets/img/atempa/1-1.png" alt />
+      </div>
+      <div class="box2">
+        <span class="spa">
+          <p style="display:inline-block;padding:5px 10px; color:#606266; font-size:16px;">
+            参考时钟
+            <br />fref频率:
+          </p>
+          <el-input class="box2k1" v-model="inputshuru" placeholder="请输入内容"></el-input>
+          <p
+            style="position: relative;bottom: 12px;display:inline-block;padding:5px 10px; color:#606266; font-size:16px"
+          >Hz</p>
+          <div class="xian33">
+            <img class="youjiantou" src="../assets/img/atempa/3-3.png" alt />
+          </div>
+          <div class="xian34">
+            <img class="youjiantou" src="../assets/img/atempa/3-4.png" alt />
+          </div>
+          <div class="xian34">
+            <img class="jiantou36" src="../assets/img/atempa/3-6.png" alt />
+          </div>
+          <div class="xian42">
+            <img class="jiantou36" src="../assets/img/atempa/4-2.png" alt />
+          </div>
+        </span>
+      </div>
+      <div class="box3">
+        <div class="box31">
+          <img class="youjiantou" src="../assets/img/atempa/2-1.png" alt />
+        </div>
+        <span class="sp3">
+          <span>
+            <el-input class="box3k1" v-model="refdiv" placeholder="refdiv"></el-input>
+          </span>
+          <img class="youjiantou" src="../assets/img/atempa/3-1.png" alt />
+          <span class="wenzi3">PFD</span>
+          <img class="youjiantou" src="../assets/img/atempa/3-1.png" alt />
+          <span class="wenzi3">CP</span>
+          <img class="youjiantou" src="../assets/img/atempa/3-1.png" alt />
+          <span class>
+            <img class="zhongjian" src="../assets/img/atempa/3-2.png" alt />
+          </span>
+          <img class="youjiantou" src="../assets/img/atempa/3-1.png" alt />
+          <span class="wenzi3">÷2</span>
+          <img class="youjiantou" src="../assets/img/atempa/3-1.png" alt />
+          <span>
+            <el-input class="box3k1" v-model="postdiv1" placeholder="postdiv1"></el-input>
+          </span>
+          <img class="youjiantou" src="../assets/img/atempa/3-1.png" alt />
+          <span>
+            <el-input class="box3k1" v-model="postdiv2" placeholder="postdiv2"></el-input>
+          </span>
+          <img class="youjiantou" src="../assets/img/atempa/3-1.png" alt />
+          <span>
+            <img class="shuchu2" src="../assets/img/atempa/1-1.png" alt />
+          </span>
+          <img class="youjiantou" src="../assets/img/atempa/3-1.png" alt />
+          <span>
+            <el-input class="box3k1 box3k2" v-model="inputshuchu" placeholder="输出频率"></el-input>Hz
+          </span>
+        </span>
+        <div class="ffd">ffd=</div>
+        <div class="fvco">fvco=</div>
+        <div class="fbdiv">
+          <input class="box3k5" type="text" v-model="fbdiv" placeholder="FBDIV" />
+        </div>
+        <div class="box3moshi">
+          <el-select v-model="value" clearable placeholder="请选择模式">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </div>
+        <div class="fpfd">fpfd=</div>
+      </div>
+      <div class="jiantou22">
+        <img class="youjiantou" src="../assets/img/atempa/2-2.png" alt />
+      </div>
+      <div class="jiantou12">
+        <img class="youjiantou" src="../assets/img/atempa/1-2.png" alt />
+      </div>
+      <div class="xian13">
+        <img class="youjiantou" src="../assets/img/atempa/1-3.png" alt />
+      </div>
+      <div class="box4">
+        <div class="box4jiantou">
+          <img class="xian331" src="../assets/img/atempa/4-1.png" alt />
+          <span>FOUT1PH0=&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <br />
+          <img class src="../assets/img/atempa/4-1.png" alt />
+          <span>FOUT1PH90=&nbsp;</span>
+          <br />
+          <img class src="../assets/img/atempa/4-1.png" alt />
+          <span>FOUT1PH180=</span>
+          <br />
+          <img class src="../assets/img/atempa/4-1.png" alt />
+          <span>FOUT1PH270=</span>
+          <br />
+          <br />
+          <span class="jiantou41">
+            <img src="../assets/img/atempa/4-1.png" alt />FOUT2=
+          </span>
+          <br />
+          <br />
+          <br />
+          <span class="jiantou41">
+            <img src="../assets/img/atempa/4-1.png" alt />FOUT3=
+          </span>
+          <br />
+          <br />
+          <br />
+          <span class="jiantou41">
+            <img src="../assets/img/atempa/4-1.png" alt />FOUT4=
+          </span>
+          <br />
+        </div>
+        <div class="wenzikuang4">
+          <span class="wenzi4">÷2</span>
+          <br />
+          <br />
+          <span class="wenzi4">÷3</span>
+          <br />
+          <br />
+          <span class="wenzi4">÷4</span>
+        </div>
+        <div class="box4kaiguan">
+          <span class="wenzi3">÷2</span>
+        </div>
+        <div class="box4shuchu"></div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+//document.getElementByle("textjieshu").value
+// import { clcckChip } from "@/api/api";
+export default {
+  name: "tempa",
+  data() {
+    return {
+      fbdiv: "",
+      inputshuru: "",
+      refdiv: "",
+      postdiv1: "",
+      postdiv2: "",
+      inputshuchu: "",
+      options: [
+        {
+          value: "选项1",
+          label: "整数模式"
+        },
+        {
+          value: "选项2",
+          label: "小数模式"
+        }
+      ],
+      value: ""
+    };
+  },
+  components: {}
+};
+</script>
+
+<style lang='less' scoped>
+.zhongjian {
+  position: relative;
+  top: 30px;
+}
+.homeIcon {
+  position: relative;
+  float: right;
+}
+.beijing {
+  background: url("");
+  background-repeat: no-repeat;
+  background-size: 2900px;
+  background-position: 100px 50px;
+}
+.ling {
+  padding: 30px 10px;
+  text-align: center;
+  border-radius: 10px;
+  width: 1600px;
+  height: 820px;
+  box-sizing: border-box;
+  margin-left: 70px;
+  .box1 {
+    position: relative;
+    height: 160px;
+    .box1k {
+      position: relative;
+      left: 450px;
+      top: 40px;
+    }
+  }
+  .box2 {
+    position: relative;
+    height: 60px;
+    .spa {
+      position: relative;
+      top: 10px;
+      right: 680px;
+
+      .box2k1 {
+        width: 110px;
+        height: 40px;
+        position: relative;
+        bottom: 12px;
+        border-radius: 10px;
+      }
+    }
+  }
+  .box3 {
+    position: relative;
+    height: 260px;
+    .box31 {
+      height: 40px;
+      position: relative;
+      right: 185px;
+    }
+    .sp3 {
+      position: relative;
+      left: 10px;
+      bottom: 70px;
+      .youjiantou {
+        height: 16px;
+      }
+      .shuchu2 {
+        height: 130px;
+        position: relative;
+        top: 40px;
+      }
+      .box3k1 {
+        width: 80px;
+        height: 40px;
+        padding: 10px 15px;
+      }
+      .box3k2 {
+        width: 90px;
+      }
+      .wenzi3 {
+        background-color: White;
+        display: inline-block;
+        padding: 10px 15px;
+        border-color: black;
+        border-width: 1px;
+        border-style: solid;
+      }
+    }
+    .ffd {
+      position: relative;
+      bottom: 60px;
+      right: 420px;
+    }
+    .fvco {
+      position: relative;
+      bottom: 60px;
+      right: 200px;
+    }
+    .fbdiv {
+      position: relative;
+      right: 126px;
+      top: 47px;
+      .box3k5 {
+        width: 65px;
+        height: 35px;
+        padding: 10px 15px;
+      }
+    }
+    .box3moshi {
+      position: relative;
+      right: 330px;
+      top: -40px;
+    }
+  }
+  .box4 {
+    position: relative;
+    left: 580px;
+    bottom: 40px;
+    float: right;
+    .box4jiantou {
+      position: relative;
+      left: 115px;
+      .jiantou41 {
+        position: relative;
+        left: -30px;
+      }
+    }
+    .wenzikuang4 {
+      position: relative;
+      bottom: 155px;
+      right: -30px;
+    }
+    .box4kaiguan {
+      position: relative;
+      bottom: 400px;
+      right: 100px;
+      .wenzi3 {
+        background-color: White;
+        display: inline-block;
+        padding: 25px 35px;
+        border-color: black;
+        border-width: 1px;
+        border-style: solid;
+      }
+    }
+  }
+  .jiantou22 {
+    position: relative;
+    bottom: 255px;
+    right: 1455px;
+    float: right;
+  }
+  .jiantou12 {
+    position: relative;
+    bottom: 405px;
+    right: 260px;
+    float: right;
+  }
+  .jiantou36 {
+    position: relative;
+    bottom: 233px;
+    left: 370px;
+  }
+  .xian13 {
+    position: relative;
+    bottom: 254px;
+    right: 5px;
+    float: right;
+  }
+  .xian33 {
+    position: relative;
+    left: 365px;
+    top: 100px;
+  }
+  .xian34 {
+    position: relative;
+    left: 650px;
+    bottom: 130px;
+  }
+  .xian42 {
+    position: relative;
+    bottom: 176px;
+    left: 586px;
+  }
+  .xian331 {
+    position: relative;
+    left: -8px;
+  }
+  .wenzi4 {
+    background-color: White;
+    display: inline-block;
+    padding: 8px 20px;
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+  }
+  .fpfd {
+    position: relative;
+    right: 540px;
+    bottom: 300px;
+  }
+}
+</style>
+
+000000000000000000000000000000000000000000000000000000000000
+
+components/home.vue
+<template>
+  <el-container class="homecontainer">
+    <el-header>
+      <div>
+        <span>Chip Selection</span>
+      </div>
+      <el-button type="info" @click="home">主页</el-button>
+    </el-header>
+    <!-- 页面主体 -->
+    <el-container>
+      <!-- 侧边栏 -->
+      <el-aside width="200px">
+        <!-- 侧边菜单栏区域 -->
+        <el-menu background-color="#333744" text-color="#fff" active-text-color="#409EEF" unique-opened :collapse="isCollappse"
+        :collapse-transition="false" router>
+        <!-- <el-submenu index="1">
+            <template slot="title">
+              <i class></i>
+              <span>导航一</span>
+            </template> -->
+            <el-menu-item index="">tempo ip</el-menu-item>
+            <!-- </el-submenu> -->
+        </el-menu>
+      </el-aside>
+      <el-main>Main</el-main>
+    </el-container>
+  </el-container>
+</template>
+
+<script>
+export default {
+  methods: {
+    // home() {
+    //   window.sessionStorage.clear();
+    //   this.$router.push("/home");
+    // }
+  }
+};
+</script>
+
+<style lang="less" scoped>
+.homecontainer {
+  height: 100vh;
+}
+.el-header {
+  background-color: #373d41;
+  display: flex;
+  justify-content: space-between;
+  padding-left: 0;
+  align-items: center;
+  color: #fff;
+  font-size: 20px;
+  > div {
+    display: flex;
+    align-items: center;
+    span {
+      margin-left: 15px;
+    }
+  }
+}
+.el-aside {
+  background-color: #333744;
+   .el-menu{
+       border-right: none;
+   }
+}
+.el-main {
+  background-color: #eaedf1;
+}
+</style>
+
+000000000000000000000000000000000000000000000000000000000000
